@@ -1,0 +1,114 @@
+{
+  "description": "FNO synthetic data \u2014 single cardamom pod drying",
+  "grid": {
+    "Nx": 8,
+    "Ny": 16,
+    "dx_mm": 1.125,
+    "dy_mm": 1.125
+  },
+  "pod_geometry": {
+    "length_mm": 18.0,
+    "width_mm": 9.0,
+    "n_pod_cells": 76,
+    "n_surface_cells": 28
+  },
+  "physics": {
+    "rho_kg_m3": 1100.0,
+    "cp_J_kgK": 3500.0,
+    "k_thermal_W_mK": 0.45,
+    "alpha_m2_s": 1.1688311688311688e-07,
+    "D_eff_m2_s": 8e-10,
+    "M_eq_kg_kg": 0.08,
+    "h_conv_W_m2K": 30.0,
+    "k_evap_ref_per_s": 0.00035,
+    "T_evap_ref_K": 333.15,
+    "Ea_evap_J_mol": 38000.0,
+    "L_vap_J_kg": 2450000.0
+  },
+  "simulation": {
+    "dt_s": 3.0,
+    "t_prediction_s": 360.0,
+    "n_steps": 120,
+    "solver": "Forward Euler",
+    "BC_temperature": "Neumann (zero-flux walls), Dirichlet air=T_heater",
+    "BC_moisture": "Neumann (zero-flux walls), surface evaporation sink"
+  },
+  "input_channels": [
+    {
+      "ch": 0,
+      "name": "T_current",
+      "units": "\u00b0C",
+      "description": "Current temperature distribution inside pod"
+    },
+    {
+      "ch": 1,
+      "name": "M_current",
+      "units": "kg_water/kg_dry",
+      "description": "Current moisture content distribution inside pod"
+    },
+    {
+      "ch": 2,
+      "name": "T_heater",
+      "units": "\u00b0C",
+      "description": "Heater air temperature (uniform, MPC control variable)"
+    }
+  ],
+  "output_channels": [
+    {
+      "ch": 0,
+      "name": "T_future",
+      "units": "\u00b0C",
+      "description": "Temperature distribution 6 min later"
+    },
+    {
+      "ch": 1,
+      "name": "M_future",
+      "units": "kg_water/kg_dry",
+      "description": "Moisture content distribution 6 min later"
+    }
+  ],
+  "dataset": {
+    "n_train": 8000,
+    "n_val": 1000,
+    "n_test": 500,
+    "traj_fraction": 0.65,
+    "n_traj_steps": 14,
+    "heater_range_degC": [
+      50,
+      75
+    ]
+  },
+  "normalisation_stats": {
+    "X_ch0_T_current": {
+      "mean": 51.33560562133789,
+      "std": 25.53397560119629,
+      "min": 20.0,
+      "max": 90.0
+    },
+    "X_ch1_M_current": {
+      "mean": 0.5673927068710327,
+      "std": 0.4209839403629303,
+      "min": 0.0,
+      "max": 2.3803274631500244
+    },
+    "X_ch2_T_heater": {
+      "mean": 58.183815002441406,
+      "std": 5.84979772567749,
+      "min": 50.0,
+      "max": 75.0
+    },
+    "y_ch0_T_future": {
+      "mean": 55.77507400512695,
+      "std": 30.932601928710938,
+      "min": 20.0,
+      "max": 90.0
+    },
+    "y_ch1_M_future": {
+      "mean": 0.5305066704750061,
+      "std": 0.3970988988876343,
+      "min": 0.0017397839110344648,
+      "max": 2.255836009979248
+    }
+  },
+  "units_note": "Non-pod cells are masked: T=T_heater, M=0. When feeding to FNO, zero-out non-pod cells or apply pod_mask."
+}
